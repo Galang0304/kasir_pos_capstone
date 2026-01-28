@@ -1,6 +1,6 @@
-node_modules
-dist
-build
+node_modules/
 .env
-.env.local
 *.log
+.DS_Store
+client/build/
+client/node_modules/
