@@ -9,7 +9,13 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://*.vercel.app', process.env.FRONTEND_URL].filter(Boolean),
+  origin: [
+    'http://localhost:3000', 
+    'https://kasir-pos-capstone.vercel.app',
+    'https://kasir-pos-capstone-git-main-galang0304s-projects.vercel.app',
+    'https://kasir-pos-capstone-galang0304s-projects.vercel.app',
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
   credentials: true
 }));
 app.use(bodyParser.json());
