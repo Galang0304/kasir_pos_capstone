@@ -89,15 +89,12 @@ router.post('/', authMiddleware, async (req, res) => {
     const [categoryResult] = await db.query('SELECT id FROM categories WHERE name = ?', [category]);
     const category_id = categoryResult.length > 0 ? categoryResult[0].id : 1;
     
-    // Generate UUID for product ID
-    const productId = uuidv4();
-    
-    await db.query(
-      'INSERT INTO products (id, name, category_id, price, stock, sku, description, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [productId, name, category_id, price, stock, sku, description, image_url || '']
+    const [result] = await db.query(
+      'INSERT INTO products (name, category_id, price, stock, sku, description, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [name, category_id, price, stock, sku, description, image_url || '']
     );
     
-    const [newProduct] = await db.query('SELECT * FROM products WHERE id = ?', [productId]);
+    const [newProduct] = await db.query('SELECT * FROM products WHERE id = ?', [result.insertId]);
     console.log('Product created successfully:', newProduct[0]);
     res.status(201).json(newProduct[0]);
   } catch (error) {

@@ -50,15 +50,14 @@ router.get('/:id', authMiddleware, async (req, res) => {
 // Create employee (admin only)
 router.post('/', authMiddleware, adminOnly, async (req, res) => {
   try {
-    const id = uuidv4();
     const { name, position, phone, email, salary, joinDate, status } = req.body;
     
-    await db.query(
-      'INSERT INTO employees (id, name, position, phone, email, salary, join_date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [id, name, position, phone, email, salary, joinDate, status || 'active']
+    const [result] = await db.query(
+      'INSERT INTO employees (name, position, phone, email, salary, join_date, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [name, position, phone, email, salary, joinDate, status || 'active']
     );
     
-    const [newEmployee] = await db.query('SELECT * FROM employees WHERE id = ?', [id]);
+    const [newEmployee] = await db.query('SELECT * FROM employees WHERE id = ?', [result.insertId]);
     const e = newEmployee[0];
     
     res.status(201).json({

@@ -68,17 +68,16 @@ router.get('/:id', authMiddleware, async (req, res) => {
 // Create customer
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    const id = uuidv4();
     const { name, phone, email, address } = req.body;
     
-    console.log('Creating customer:', { id, name, phone, email, address });
+    console.log('Creating customer:', { name, phone, email, address });
     
-    await db.query(
-      'INSERT INTO customers (id, name, phone, email, address) VALUES (?, ?, ?, ?, ?)',
-      [id, name, phone || '-', email || '-', address || '-']
+    const [result] = await db.query(
+      'INSERT INTO customers (name, phone, email, address) VALUES (?, ?, ?, ?)',
+      [name, phone || '-', email || '-', address || '-']
     );
     
-    const [newCustomer] = await db.query('SELECT * FROM customers WHERE id = ?', [id]);
+    const [newCustomer] = await db.query('SELECT * FROM customers WHERE id = ?', [result.insertId]);
     
     if (!newCustomer || newCustomer.length === 0) {
       throw new Error('Customer created but not found in database');
